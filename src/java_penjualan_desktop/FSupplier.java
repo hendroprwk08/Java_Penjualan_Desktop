@@ -240,11 +240,11 @@ public class FSupplier extends javax.swing.JFrame {
 
         try {
             JasperCompileManager.compileReportToFile(
-                dir + "/src/java_penjualan_desktop/customer.jrxml",
-                dir + "/src/java_penjualan_desktop/customer.jasper");
+                dir + "/src/java_penjualan_desktop/supplier.jrxml",
+                dir + "/src/java_penjualan_desktop/supplier.jasper");
 
             jp = JasperFillManager.fillReport(
-                getClass().getResourceAsStream("customer.jasper"),
+                getClass().getResourceAsStream("supplier.jasper"),
                 null,
                 DB.connectDB());
 
