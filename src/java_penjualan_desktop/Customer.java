@@ -1,9 +1,9 @@
 package java_penjualan_desktop;
 
-public class Pemasok {
+public class Customer {
     String id, nama;
 
-    public Pemasok(String id, String nama) {
+    public Customer(String id, String nama) {
         this.id = id;
         this.nama = nama;
     }

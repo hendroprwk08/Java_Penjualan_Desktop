@@ -2,22 +2,28 @@ package java_penjualan_desktop;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 public class FJual extends javax.swing.JFrame {
 
     ArrayList<Barang> arrBarang = new ArrayList<>();
-    ArrayList<Pemasok> arrPemasok = new ArrayList<>();
-    String id_pemasok, id_barang, nama_barang; //penampung
+    ArrayList<Customer> arrCustomer = new ArrayList<>();
+    String sql, id_customer, id_barang, nama_barang; //penampung
     
     private DefaultTableModel tableModel;
     
     public FJual() {
         initComponents();
         loadBarang();
-        loadPemasok();
+        loadCustomer();
         setTable();
     }
 
@@ -50,25 +56,25 @@ public class FJual extends javax.swing.JFrame {
         }
     }
     
-    private void loadPemasok(){
-        cb_pemasok.removeAllItems();
+    private void loadCustomer(){
+        cb_customer.removeAllItems();
         
         try {
-            ResultSet rs = DB.read( "select idsupplier, namasupplier from supplier" );
+            ResultSet rs = DB.read( "select idcustomer, namacustomer from customer" );
             
             //masukkan kedalam class Divisi ( tampung )
             while( rs.next() ){
-                arrPemasok.add( 
-                    new Pemasok( 
-                        rs.getString("idsupplier"),
-                        rs.getString("namasupplier")
+                arrCustomer.add( 
+                    new Customer( 
+                        rs.getString("idcustomer"),
+                        rs.getString("namacustomer")
                     )
                 );
             }
             
             //ambil dari class divisi dan munculkan pada combo box cbx_divisi
-            for( int i = 0; i < arrPemasok.size(); i++ ){
-                cb_pemasok.addItem( arrPemasok.get( i ).getId() + " - " + arrPemasok.get( i ).getNama());
+            for( int i = 0; i < arrCustomer.size(); i++ ){
+                cb_customer.addItem(arrCustomer.get( i ).getId() + " - " + arrCustomer.get( i ).getNama());
             }
             
         } catch (SQLException ex) {
@@ -109,7 +115,7 @@ public class FJual extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
-        cb_pemasok = new javax.swing.JComboBox();
+        cb_customer = new javax.swing.JComboBox();
         cb_barang = new javax.swing.JComboBox();
         jLabel4 = new javax.swing.JLabel();
         tf_qty = new javax.swing.JTextField();
@@ -165,10 +171,10 @@ public class FJual extends javax.swing.JFrame {
         table.setComponentPopupMenu(popup);
         jScrollPane1.setViewportView(table);
 
-        cb_pemasok.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        cb_pemasok.addActionListener(new java.awt.event.ActionListener() {
+        cb_customer.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cb_customer.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cb_pemasokActionPerformed(evt);
+                cb_customerActionPerformed(evt);
             }
         });
 
@@ -275,7 +281,7 @@ public class FJual extends javax.swing.JFrame {
                                 .addGap(21, 21, 21)))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(tf_no_faktur, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(cb_pemasok, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(cb_customer, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -305,7 +311,7 @@ public class FJual extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(cb_pemasok, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cb_customer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
@@ -338,13 +344,13 @@ public class FJual extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void cb_pemasokActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_pemasokActionPerformed
-        int idx = cb_pemasok.getSelectedIndex();
+    private void cb_customerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_customerActionPerformed
+        int idx = cb_customer.getSelectedIndex();
         
-        if ( arrPemasok.size() > 0 ){
-            id_pemasok = arrPemasok.get(idx).getId();
+        if ( arrCustomer.size() > 0 ){
+            id_customer = arrCustomer.get(idx).getId();
         }
-    }//GEN-LAST:event_cb_pemasokActionPerformed
+    }//GEN-LAST:event_cb_customerActionPerformed
 
     private void cb_barangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_barangActionPerformed
         int idx = cb_barang.getSelectedIndex();
@@ -434,8 +440,41 @@ public class FJual extends javax.swing.JFrame {
         }else if( dc_tanggal.getDate() == null ){
             JOptionPane.showMessageDialog(null, "Tanggal tak boleh kosong");
         }else{
-            JOptionPane.showMessageDialog(null, "Proses Simpan");
+            //ubah format tanggal sesuai format mysql
+            String pattern  = "yyyy-MM-dd";
+            DateFormat formatter = new SimpleDateFormat(pattern);
+            String tgl = formatter.format( dc_tanggal.getDate());
+            
+            String no_faktur = tf_no_faktur.getText().trim();
+            try {
+                //simpan jual
+                sql = "insert into jual values ('"+ no_faktur +"', "
+                        + "'"+ tgl +"', '"+ id_customer +"')";
+            
+                DB.exec(sql); //simpan jual
+                
+                //2. simpan data detil jual diambil yang diambil dari jtable
+                for( int i = 0; i < tableModel.getRowCount(); i++){
+                    sql = "insert into detjual values ('"+ no_faktur +"', "
+                            + "'"+ tableModel.getValueAt(i, 0).toString() +"', " //id
+                            + ""+ tableModel.getValueAt(i, 2).toString() +", " //qty
+                            + ""+ tableModel.getValueAt(i, 3).toString() +" )"; //harga
+            
+                    DB.exec(sql); //simpan jual
+                }
+                
+                tf_no_faktur.setText("");
+                tf_total.setText( "0" );
+                dc_tanggal.setDate( null );
+                
+                //bersihkan jtable
+                ((DefaultTableModel)table.getModel()).setRowCount(0);
+            } catch (SQLException ex) {
+                System.out.println( ex );
+            }
+            
         }
+        
     }//GEN-LAST:event_bt_simpanActionPerformed
 
     void hitung(){
@@ -452,7 +491,8 @@ public class FJual extends javax.swing.JFrame {
     void total(){
         int total = 0;
         for( int i = 0; i < tableModel.getRowCount(); i++){
-            total += Integer.valueOf( tableModel.getValueAt(i, 4).toString() ); //kolom ke 5, dalam index(4)
+            //kolom ke 5, dalam index(4)
+            total += Integer.valueOf( tableModel.getValueAt(i, 4).toString() ); 
         }
         tf_total.setText( String.valueOf( total ) );
     }
@@ -498,7 +538,7 @@ public class FJual extends javax.swing.JFrame {
     private javax.swing.JButton bt_simpan;
     private javax.swing.JButton bt_tambah;
     private javax.swing.JComboBox cb_barang;
-    private javax.swing.JComboBox cb_pemasok;
+    private javax.swing.JComboBox cb_customer;
     private com.toedter.calendar.JDateChooser dc_tanggal;
     private com.toedter.calendar.JDateChooser jDateChooser1;
     private javax.swing.JLabel jLabel1;

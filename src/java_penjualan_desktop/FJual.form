@@ -102,7 +102,7 @@
                       </Group>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="tf_no_faktur" min="-2" pref="67" max="-2" attributes="0"/>
-                          <Component id="cb_pemasok" min="-2" pref="199" max="-2" attributes="0"/>
+                          <Component id="cb_customer" min="-2" pref="199" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="32767" attributes="0"/>
                   </Group>
@@ -142,7 +142,7 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="cb_pemasok" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="cb_customer" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
@@ -227,7 +227,7 @@
         </Component>
       </SubComponents>
     </Container>
-    <Component class="javax.swing.JComboBox" name="cb_pemasok">
+    <Component class="javax.swing.JComboBox" name="cb_customer">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
           <StringArray count="4">
@@ -239,7 +239,7 @@
         </Property>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cb_pemasokActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cb_customerActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JComboBox" name="cb_barang">

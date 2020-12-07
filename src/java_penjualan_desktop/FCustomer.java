@@ -235,22 +235,14 @@ public class FCustomer extends javax.swing.JFrame {
             + "where idcustomer = '"+ tf_id.getText().trim() +"'";
         }
 
-        //eksekusi sql
-        boolean berhasil = false;
-
         try {
-            berhasil = DB.exec(sql);
-        } catch (SQLException ex) {
-            Logger.getLogger(FCustomer.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        if ( berhasil ){
+            DB.exec(sql);
             kosong();
             showData( null );
             st_edit = false;
             id = null;
-        }else{
-            JOptionPane.showMessageDialog(null, "Gagal eksekusi data");
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, ex);
         }
     }//GEN-LAST:event_bt_simpanActionPerformed
 
@@ -265,21 +257,14 @@ public class FCustomer extends javax.swing.JFrame {
             sql = "delete from customer where "
             + "idcustomer = '"+ tf_id.getText().trim() +"'";
 
-            boolean berhasil = false;
-
             try {
-                berhasil = DB.exec(sql);
-            } catch (SQLException ex) {
-                Logger.getLogger(FCustomer.class.getName()).log(Level.SEVERE, null, ex);
-            }
-
-            if ( berhasil ){
+                DB.exec(sql);
                 kosong();
                 showData( null );
                 st_edit = false;
                 id = null;
-            }else{
-                JOptionPane.showMessageDialog(null, "Data tak dihapus");
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(null, ex);
             }
         }
     }//GEN-LAST:event_bt_hapusActionPerformed
