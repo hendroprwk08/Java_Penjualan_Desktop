@@ -106,8 +106,8 @@ public class FJual extends javax.swing.JFrame {
 
         jDateChooser1 = new com.toedter.calendar.JDateChooser();
         popup = new javax.swing.JPopupMenu();
-        mi_ubah = new javax.swing.JMenuItem();
-        mi_hapus = new javax.swing.JMenuItem();
+        mUbah = new javax.swing.JMenuItem();
+        mHapus = new javax.swing.JMenuItem();
         jLabel1 = new javax.swing.JLabel();
         tf_no_faktur = new javax.swing.JTextField();
         dc_tanggal = new com.toedter.calendar.JDateChooser();
@@ -131,21 +131,21 @@ public class FJual extends javax.swing.JFrame {
         bt_cetak = new javax.swing.JButton();
         bt_hapus = new javax.swing.JButton();
 
-        mi_ubah.setText("Ubah");
-        mi_ubah.addActionListener(new java.awt.event.ActionListener() {
+        mUbah.setText("Ubah");
+        mUbah.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mi_ubahActionPerformed(evt);
+                mUbahActionPerformed(evt);
             }
         });
-        popup.add(mi_ubah);
+        popup.add(mUbah);
 
-        mi_hapus.setText("Hapus");
-        mi_hapus.addActionListener(new java.awt.event.ActionListener() {
+        mHapus.setText("Hapus");
+        mHapus.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mi_hapusActionPerformed(evt);
+                mHapusActionPerformed(evt);
             }
         });
-        popup.add(mi_hapus);
+        popup.add(mHapus);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -191,11 +191,6 @@ public class FJual extends javax.swing.JFrame {
         tf_qty.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
                 tf_qtyFocusLost(evt);
-            }
-        });
-        tf_qty.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tf_qtyActionPerformed(evt);
             }
         });
         tf_qty.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -391,32 +386,6 @@ public class FJual extends javax.swing.JFrame {
         total();
     }//GEN-LAST:event_bt_tambahActionPerformed
 
-    private void mi_ubahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mi_ubahActionPerformed
-        int idx_cb_barang = 0;
-        int idx = table.getSelectedRow();        
-        String temp_id_barang = tableModel.getValueAt( idx, 0).toString();
-        
-        //temukan index ( urutan ) pada combobox cb_barang, otomatis agar bergeser
-        for( int i = 0; i < arrBarang.size(); i++){
-            if ( arrBarang.get( i ).getId().equals( temp_id_barang ) ) {
-                idx_cb_barang = i;
-                break;
-            }
-        }
-        
-        //geser combo box agar menuju kode barang
-        cb_barang.setSelectedIndex( idx_cb_barang );
-        tf_qty.setText( tableModel.getValueAt( idx, 2).toString() ); //qty berada pada index ke 2  
-        tableModel.removeRow( idx );
-        total();
-    }//GEN-LAST:event_mi_ubahActionPerformed
-
-    private void mi_hapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mi_hapusActionPerformed
-        int idx = table.getSelectedRow();
-        tableModel.removeRow( idx );
-        total();
-    }//GEN-LAST:event_mi_hapusActionPerformed
-
     private void tf_qtyKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tf_qtyKeyReleased
         hitung();
     }//GEN-LAST:event_tf_qtyKeyReleased
@@ -427,10 +396,6 @@ public class FJual extends javax.swing.JFrame {
         
         hitung();
     }//GEN-LAST:event_tf_qtyFocusLost
-
-    private void tf_qtyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tf_qtyActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_tf_qtyActionPerformed
 
     private void bt_simpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_simpanActionPerformed
         if ( tf_no_faktur.getText().equals( "" ) ){
@@ -472,10 +437,34 @@ public class FJual extends javax.swing.JFrame {
             } catch (SQLException ex) {
                 System.out.println( ex );
             }
-            
+        }    
+    }//GEN-LAST:event_bt_simpanActionPerformed
+
+    private void mUbahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mUbahActionPerformed
+        int idx_cb_barang = 0;
+        int idx = table.getSelectedRow();        
+        String temp_id_barang = tableModel.getValueAt( idx, 0).toString();
+        
+        //temukan index ( urutan ) pada combobox cb_barang, otomatis agar bergeser
+        for( int i = 0; i < arrBarang.size(); i++){
+            if ( arrBarang.get( i ).getId().equals( temp_id_barang ) ) {
+                idx_cb_barang = i;
+                break;
+            }
         }
         
-    }//GEN-LAST:event_bt_simpanActionPerformed
+        //geser combo box agar menuju kode barang yang terpilih
+        cb_barang.setSelectedIndex( idx_cb_barang );
+        tf_qty.setText( tableModel.getValueAt( idx, 2).toString() ); //qty berada pada index ke 2  
+        tableModel.removeRow( idx );
+        total();
+    }//GEN-LAST:event_mUbahActionPerformed
+
+    private void mHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mHapusActionPerformed
+        int idx = table.getSelectedRow();
+        tableModel.removeRow( idx );
+        total();
+    }//GEN-LAST:event_mHapusActionPerformed
 
     void hitung(){
         try {
@@ -550,8 +539,8 @@ public class FJual extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JMenuItem mi_hapus;
-    private javax.swing.JMenuItem mi_ubah;
+    private javax.swing.JMenuItem mHapus;
+    private javax.swing.JMenuItem mUbah;
     private javax.swing.JPopupMenu popup;
     private javax.swing.JTable table;
     private javax.swing.JTextField tf_harga;
