@@ -546,10 +546,11 @@ public class FJual extends javax.swing.JFrame {
 
     private void bt_faktur_baruActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_faktur_baruActionPerformed
         tf_no_faktur.setText("");
+        tf_no_faktur.setEditable( true ); //buka text field
         tf_total.setText( "0" );
         dc_tanggal.setDate( null );
         edit = false;
-
+        
         //bersihkan jtable
         ((DefaultTableModel)table.getModel()).setRowCount(0);
     }//GEN-LAST:event_bt_faktur_baruActionPerformed
