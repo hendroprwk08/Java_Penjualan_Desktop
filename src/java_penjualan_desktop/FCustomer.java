@@ -221,8 +221,6 @@ public class FCustomer extends javax.swing.JFrame {
     }//GEN-LAST:event_bt_tambahActionPerformed
 
     private void bt_simpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_simpanActionPerformed
-        
-
         if ( st_edit == false ){ //simpan
             sql = "insert into customer values( "
             + "'"+ tf_id.getText().trim() +"', "

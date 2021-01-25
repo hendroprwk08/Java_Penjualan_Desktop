@@ -4,19 +4,25 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.view.JasperViewer;
 
 public class FJual extends javax.swing.JFrame {
 
     ArrayList<Barang> arrBarang = new ArrayList<>();
     ArrayList<Customer> arrCustomer = new ArrayList<>();
     String sql, id_customer, id_barang, nama_barang; //penampung
+    boolean edit = false; //status data edit? atau tambah data baru?
     
     private DefaultTableModel tableModel;
     
@@ -130,6 +136,9 @@ public class FJual extends javax.swing.JFrame {
         bt_simpan = new javax.swing.JButton();
         bt_cetak = new javax.swing.JButton();
         bt_hapus = new javax.swing.JButton();
+        bt_faktur_baru = new javax.swing.JButton();
+        tf_cari = new javax.swing.JTextField();
+        bt_cari = new javax.swing.JButton();
 
         mUbah.setText("Ubah");
         mUbah.addActionListener(new java.awt.event.ActionListener() {
@@ -228,8 +237,33 @@ public class FJual extends javax.swing.JFrame {
         });
 
         bt_cetak.setText("Cetak Faktur");
+        bt_cetak.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bt_cetakActionPerformed(evt);
+            }
+        });
 
         bt_hapus.setText("Hapus");
+
+        bt_faktur_baru.setText("Tambah");
+        bt_faktur_baru.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bt_faktur_baruActionPerformed(evt);
+            }
+        });
+
+        tf_cari.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tf_cariActionPerformed(evt);
+            }
+        });
+
+        bt_cari.setText("Cari");
+        bt_cari.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bt_cariActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -245,12 +279,6 @@ public class FJual extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(jLabel2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(dc_tanggal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(34, 34, 34))
-                            .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                     .addComponent(cb_barang, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addGroup(layout.createSequentialGroup()
@@ -265,7 +293,19 @@ public class FJual extends javax.swing.JFrame {
                                         .addComponent(tf_jumlah, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(bt_tambah)))
-                                .addGap(0, 87, Short.MAX_VALUE))))
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel2)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(dc_tanggal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(tf_cari, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(bt_cari)))
+                                .addGap(34, 34, 34))))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -282,10 +322,12 @@ public class FJual extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                             .addGroup(layout.createSequentialGroup()
+                                .addComponent(bt_faktur_baru)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(bt_simpan)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(bt_cetak)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(18, 18, 18)
                                 .addComponent(bt_hapus)
                                 .addGap(35, 35, 35)
                                 .addComponent(jLabel6)
@@ -296,7 +338,11 @@ public class FJual extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(35, 35, 35)
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(tf_cari, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(bt_cari))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(dc_tanggal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -330,9 +376,10 @@ public class FJual extends javax.swing.JFrame {
                         .addComponent(jLabel6)
                         .addComponent(bt_simpan)
                         .addComponent(bt_cetak)
-                        .addComponent(bt_hapus))
+                        .addComponent(bt_hapus)
+                        .addComponent(bt_faktur_baru))
                     .addComponent(tf_total, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(28, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -398,6 +445,16 @@ public class FJual extends javax.swing.JFrame {
     }//GEN-LAST:event_tf_qtyFocusLost
 
     private void bt_simpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_simpanActionPerformed
+        //jika sedang edit, maka hapus data lama dahulu
+        if (edit){
+            try {
+                DB.exec("delete from detjual where faktur = '"+ tf_no_faktur.getText().trim() +"'");
+                DB.exec("delete from jual where faktur = '"+ tf_no_faktur.getText().trim() +"'");
+            } catch (SQLException ex) {
+                Logger.getLogger(FJual.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
         if ( tf_no_faktur.getText().equals( "" ) ){
             JOptionPane.showMessageDialog(null, "Nomer Faktur belum terisi");
         }else if ( tf_total.getText().equals( "0" ) ) {
@@ -428,12 +485,7 @@ public class FJual extends javax.swing.JFrame {
                     DB.exec(sql); //simpan jual
                 }
                 
-                tf_no_faktur.setText("");
-                tf_total.setText( "0" );
-                dc_tanggal.setDate( null );
-                
-                //bersihkan jtable
-                ((DefaultTableModel)table.getModel()).setRowCount(0);
+                JOptionPane.showMessageDialog(null, "Faktur berhasil disimpan");
             } catch (SQLException ex) {
                 System.out.println( ex );
             }
@@ -465,6 +517,108 @@ public class FJual extends javax.swing.JFrame {
         tableModel.removeRow( idx );
         total();
     }//GEN-LAST:event_mHapusActionPerformed
+
+    private void bt_cetakActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_cetakActionPerformed
+        String dir = System.getProperty("user.dir");
+        String noFaktur = tf_no_faktur.getText().trim();
+        
+        JasperPrint jp;
+        
+        try{
+            JasperCompileManager.compileReportToFile(
+                    dir + "/src/java_penjualan_desktop/nota.jrxml",
+                    dir + "/src/java_penjualan_desktop/nota.jasper");
+            
+            //parameter diatur pada kode dibawah ini
+            Map parameters = new HashMap();
+            parameters.put("p_faktur", noFaktur);
+            
+            jp = JasperFillManager.fillReport(
+                    getClass().getResourceAsStream("nota.jasper"), 
+                    parameters,
+                    DB.connectDB());
+            
+            JasperViewer.viewReport(jp, false);
+        }catch( Exception ex){
+            System.out.println(ex.getMessage());
+        }
+    }//GEN-LAST:event_bt_cetakActionPerformed
+
+    private void bt_faktur_baruActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_faktur_baruActionPerformed
+        tf_no_faktur.setText("");
+        tf_total.setText( "0" );
+        dc_tanggal.setDate( null );
+        edit = false;
+
+        //bersihkan jtable
+        ((DefaultTableModel)table.getModel()).setRowCount(0);
+    }//GEN-LAST:event_bt_faktur_baruActionPerformed
+
+    private void tf_cariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tf_cariActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tf_cariActionPerformed
+
+    private void bt_cariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_cariActionPerformed
+        //jika tf_cari tak ada, maka skip
+        if( tf_cari.getText().trim() == "" ) return;
+        
+        try{
+            //inisiasi variabel
+            String faktur = null, idCustomer = null;
+            int idxCustomer = 0;
+            Date tgl = null;
+            
+            edit = true; //berikan status sedang melakukan "edit data"
+        
+            sql = "select * from vtransaksijual where faktur = '"+ tf_cari.getText().trim() +"'";
+            ResultSet rs = DB.read(sql);
+            
+            //bersihkan baris table
+            ( (DefaultTableModel) table.getModel() ).setRowCount(0);
+            
+            //tampilkan data kedalam form
+            while( rs.next() ){
+                faktur = rs.getString("faktur");
+                tgl = new SimpleDateFormat("yyyy-MM-dd").parse( rs.getString("tanggal") );
+                idCustomer = rs.getString("idcustomer");
+                
+                //persiapkan 5 kolom berupa objek
+                Object[] row = new Object[5];
+
+                //atur data yang akan di masukkan kedalam objek baris
+                row[0] = rs.getString("idbarang");
+                row[1] = rs.getString("namabarang");
+                row[2] = rs.getString("qty");
+                row[3] = rs.getString("harga");
+                row[4] = rs.getString("jumlah");
+
+                //masukkan kedalam grid
+                tableModel.addRow(row);
+            }
+            
+            //letakkan nilai pada textfield dan date chooser
+            tf_no_faktur.setText( faktur );
+            tf_no_faktur.setEditable( false ); //kunci agar tak dapat diubah
+            dc_tanggal.setDate( tgl );
+            
+            //set index combo box customer
+            for( int i = 0; i < arrCustomer.size(); i++ ){
+                if( arrCustomer.get(i).getId().equals( idCustomer )){
+                    idxCustomer = i;
+                    break; //jika sudah ditemukan, maka hentikan
+                }
+            }
+            
+            //set
+            cb_customer.setSelectedIndex( idxCustomer );
+            
+            total();
+                    
+            DB.closeDB();
+        } catch( Exception ex ){
+            System.out.println( ex.getMessage() );
+        }
+    }//GEN-LAST:event_bt_cariActionPerformed
 
     void hitung(){
         try {
@@ -522,7 +676,9 @@ public class FJual extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton bt_cari;
     private javax.swing.JButton bt_cetak;
+    private javax.swing.JButton bt_faktur_baru;
     private javax.swing.JButton bt_hapus;
     private javax.swing.JButton bt_simpan;
     private javax.swing.JButton bt_tambah;
@@ -543,6 +699,7 @@ public class FJual extends javax.swing.JFrame {
     private javax.swing.JMenuItem mUbah;
     private javax.swing.JPopupMenu popup;
     private javax.swing.JTable table;
+    private javax.swing.JTextField tf_cari;
     private javax.swing.JTextField tf_harga;
     private javax.swing.JTextField tf_jumlah;
     private javax.swing.JTextField tf_no_faktur;

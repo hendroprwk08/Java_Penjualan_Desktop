@@ -14,8 +14,8 @@ public class Java_Penjualan_Desktop {
             JOptionPane.showMessageDialog( null, ex);
         }
         
-        FJual f = new FJual();
-        //f.setExtendedState(FMenu.MAXIMIZED_BOTH);
+        FMenu f = new FMenu();
+        f.setExtendedState(FMenu.MAXIMIZED_BOTH);
         f.setVisible( true );  
     }
 }
